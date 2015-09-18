@@ -2,11 +2,9 @@ import SetCache from './SetCache';
 import getNative from './getNative';
 import root from './root';
 
-/** Native method references. */
-var Set = getNative(root, 'Set');
-
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeCreate = getNative(Object, 'create');
+var nativeCreate = getNative(Object, 'create'),
+    nativeSet = getNative(root, 'Set');
 
 /**
  * Creates a `Set` cache object to optimize linear searches of large arrays.
@@ -16,7 +14,7 @@ var nativeCreate = getNative(Object, 'create');
  * @returns {null|Object} Returns the new cache object if `Set` is supported, else `null`.
  */
 function createCache(values) {
-  return (nativeCreate && Set) ? new SetCache(values) : null;
+  return (nativeCreate && nativeSet) ? new SetCache(values) : null;
 }
 
 export default createCache;

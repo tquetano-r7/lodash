@@ -1,3 +1,4 @@
+import baseTimes from '../internal/baseTimes';
 import isIterateeCall from '../internal/isIterateeCall';
 
 /* Native method references for those with the same name as other `lodash` methods. */
@@ -50,17 +51,10 @@ function range(start, end, step) {
   } else {
     end = +end || 0;
   }
-  // Use `Array(length)` so engines like Chakra and V8 avoid slower modes.
-  // See https://youtu.be/XAqIpGU8ZZk#t=17m25s for more details.
-  var index = -1,
-      length = nativeMax(nativeCeil((end - start) / (step || 1)), 0),
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = start;
-    start += step;
-  }
-  return result;
+  var n = nativeMax(nativeCeil((end - start) / (step || 1)), 0);
+  return baseTimes(n, function(index) {
+    return index ? (start += step) : start;
+  });
 }
 
 export default range;

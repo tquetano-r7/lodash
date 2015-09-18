@@ -1,9 +1,11 @@
 import baseToString from '../internal/baseToString';
-import root from '../internal/root';
+import toInteger from '../lang/toInteger';
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeFloor = Math.floor,
-    nativeIsFinite = root.isFinite;
+var nativeFloor = Math.floor;
 
 /**
  * Repeats the given string `n` times.
@@ -26,10 +28,11 @@ var nativeFloor = Math.floor,
  * // => ''
  */
 function repeat(string, n) {
-  var result = '';
   string = baseToString(string);
-  n = +n;
-  if (n < 1 || !string || !nativeIsFinite(n)) {
+  n = toInteger(n);
+
+  var result = '';
+  if (!string || n < 1 || n > MAX_SAFE_INTEGER) {
     return result;
   }
   // Leverage the exponentiation by squaring algorithm for a faster repeat.

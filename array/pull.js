@@ -3,7 +3,7 @@ import baseIndexOf from '../internal/baseIndexOf';
 /** Used for native method references. */
 var arrayProto = Array.prototype;
 
-/** Native method references. */
+/** Native value references. */
 var splice = arrayProto.splice;
 
 /**

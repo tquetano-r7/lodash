@@ -1,12 +1,13 @@
 import baseToString from '../internal/baseToString';
-import isIterateeCall from '../internal/isIterateeCall';
 
 /** Used to match words to create compound words. */
 var reWords = (function() {
-  var upper = '[A-Z\\xc0-\\xd6\\xd8-\\xde]',
-      lower = '[a-z\\xdf-\\xf6\\xf8-\\xff]+';
+  var astrals = '[\\ud800-\\udbff][\\udc00-\\udfff]',
+      upper = '[A-Z\\xc0-\\xd6\\xd8-\\xde]',
+      lower = '[a-z\\xdf-\\xf6\\xf8-\\xff]+',
+      digits = '\\d+';
 
-  return RegExp(upper + '+(?=' + upper + lower + ')|' + upper + '?' + lower + '|' + upper + '+|[0-9]+', 'g');
+  return RegExp([upper + '+(?=' + upper + lower + ')', upper + '?' + lower, upper + '+', astrals, digits].join('|'), 'g');
 }());
 
 /**
@@ -17,7 +18,7 @@ var reWords = (function() {
  * @category String
  * @param {string} [string=''] The string to inspect.
  * @param {RegExp|string} [pattern] The pattern to match words.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
+ * @param- {Object} [guard] Enables use as an iteratee for functions like `_.map`.
  * @returns {Array} Returns the words of `string`.
  * @example
  *
@@ -28,10 +29,8 @@ var reWords = (function() {
  * // => ['fred', 'barney', '&', 'pebbles']
  */
 function words(string, pattern, guard) {
-  if (guard && isIterateeCall(string, pattern, guard)) {
-    pattern = undefined;
-  }
   string = baseToString(string);
+  pattern = guard ? undefined : guard;
   return string.match(pattern || reWords) || [];
 }
 

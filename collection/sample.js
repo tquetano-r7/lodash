@@ -1,10 +1,12 @@
 import baseRandom from '../internal/baseRandom';
-import isIterateeCall from '../internal/isIterateeCall';
+import isArrayLike from '../lang/isArrayLike';
 import toArray from '../lang/toArray';
-import toIterable from '../internal/toIterable';
+import toInteger from '../lang/toInteger';
+import values from '../object/values';
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeMin = Math.min;
+var nativeMax = Math.max,
+    nativeMin = Math.min;
 
 /**
  * Gets a random element or `n` random elements from a collection.
@@ -12,9 +14,9 @@ var nativeMin = Math.min;
  * @static
  * @memberOf _
  * @category Collection
- * @param {Array|Object|string} collection The collection to sample.
+ * @param {Array|Object} collection The collection to sample.
  * @param {number} [n] The number of elements to sample.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
+ * @param- {Object} [guard] Enables use as an iteratee for functions like `_.map`.
  * @returns {*} Returns the random sample(s).
  * @example
  *
@@ -25,9 +27,9 @@ var nativeMin = Math.min;
  * // => [3, 1]
  */
 function sample(collection, n, guard) {
-  if (guard ? isIterateeCall(collection, n, guard) : n == null) {
-    collection = toIterable(collection);
-    var length = collection.length;
+  if (guard || n == null) {
+    collection = isArrayLike(collection) ? collection : values(collection);
+    length = collection.length;
     return length > 0 ? collection[baseRandom(0, length - 1)] : undefined;
   }
   var index = -1,
@@ -35,7 +37,7 @@ function sample(collection, n, guard) {
       length = result.length,
       lastIndex = length - 1;
 
-  n = nativeMin(n < 0 ? 0 : (+n || 0), length);
+  n = nativeMin(nativeMax(toInteger(n), 0), length);
   while (++index < n) {
     var rand = baseRandom(index, lastIndex),
         value = result[rand];

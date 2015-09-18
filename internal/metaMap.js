@@ -1,7 +1,7 @@
 import getNative from './getNative';
 import root from './root';
 
-/** Native method references. */
+/** Native value references. */
 var WeakMap = getNative(root, 'WeakMap');
 
 /** Used to store function metadata. */

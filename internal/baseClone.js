@@ -1,12 +1,16 @@
-import arrayCopy from './arrayCopy';
 import arrayEach from './arrayEach';
 import baseAssign from './baseAssign';
 import baseForOwn from './baseForOwn';
+import copyArray from './copyArray';
 import initCloneArray from './initCloneArray';
 import initCloneByTag from './initCloneByTag';
 import initCloneObject from './initCloneObject';
 import isArray from '../lang/isArray';
+import isHostObject from './isHostObject';
+import isMap from './isMap';
 import isObject from '../lang/isObject';
+import isSet from './isSet';
+import noMapSetTag from './noMapSetTag';
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -41,12 +45,12 @@ cloneableTags[arrayBufferTag] = cloneableTags[boolTag] =
 cloneableTags[dateTag] = cloneableTags[float32Tag] =
 cloneableTags[float64Tag] = cloneableTags[int8Tag] =
 cloneableTags[int16Tag] = cloneableTags[int32Tag] =
-cloneableTags[numberTag] = cloneableTags[objectTag] =
-cloneableTags[regexpTag] = cloneableTags[stringTag] =
+cloneableTags[mapTag] = cloneableTags[numberTag] =
+cloneableTags[objectTag] = cloneableTags[regexpTag] =
+cloneableTags[setTag] = cloneableTags[stringTag] =
 cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
 cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
 cloneableTags[errorTag] = cloneableTags[funcTag] =
-cloneableTags[mapTag] = cloneableTags[setTag] =
 cloneableTags[weakMapTag] = false;
 
 /** Used for native method references. */
@@ -59,13 +63,13 @@ var objectProto = Object.prototype;
 var objToString = objectProto.toString;
 
 /**
- * The base implementation of `_.clone` without support for argument juggling
- * and `this` binding `customizer` functions.
+ * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+ * traversed objects.
  *
  * @private
  * @param {*} value The value to clone.
  * @param {boolean} [isDeep] Specify a deep clone.
- * @param {Function} [customizer] The function to customize cloning values.
+ * @param {Function} [customizer] The function to customize cloning.
  * @param {string} [key] The key of `value`.
  * @param {Object} [object] The object `value` belongs to.
  * @param {Array} [stackA=[]] Tracks traversed source objects.
@@ -75,7 +79,7 @@ var objToString = objectProto.toString;
 function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
   var result;
   if (customizer) {
-    result = object ? customizer(value, key, object) : customizer(value);
+    result = object ? customizer(value, key, object, stackA, stackB) : customizer(value);
   }
   if (result !== undefined) {
     return result;
@@ -87,13 +91,19 @@ function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
   if (isArr) {
     result = initCloneArray(value);
     if (!isDeep) {
-      return arrayCopy(value, result);
+      return copyArray(value, result);
     }
   } else {
     var tag = objToString.call(value),
         isFunc = tag == funcTag;
 
+    if (noMapSetTag && tag == objectTag) {
+      tag = isMap(value) ? mapTag : (isSet(value) ? setTag : tag);
+    }
     if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
+      if (isHostObject(value)) {
+        return object ? value : {};
+      }
       result = initCloneObject(isFunc ? {} : value);
       if (!isDeep) {
         return baseAssign(result, value);

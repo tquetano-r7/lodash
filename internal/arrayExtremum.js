@@ -24,6 +24,13 @@ function arrayExtremum(array, iteratee, comparator, exValue) {
       result = value;
     }
   }
+  index = result === exValue ? -1 : index;
+  while (++index < length) {
+    value = array[index];
+    if (+iteratee(value) === exValue) {
+      return value;
+    }
+  }
   return result;
 }
 

@@ -1,7 +1,7 @@
 import baseIndexOf from '../internal/baseIndexOf';
 import cacheIndexOf from '../internal/cacheIndexOf';
 import createCache from '../internal/createCache';
-import isArrayLike from '../internal/isArrayLike';
+import isArrayLike from '../lang/isArrayLike';
 import restParam from '../function/restParam';
 
 /**

@@ -1,7 +1,7 @@
 import baseDifference from '../internal/baseDifference';
 import baseFlatten from '../internal/baseFlatten';
-import isArrayLike from '../internal/isArrayLike';
-import isObjectLike from '../internal/isObjectLike';
+import isArrayLike from '../lang/isArrayLike';
+import isObject from '../lang/isObject';
 import restParam from '../function/restParam';
 
 /**
@@ -13,7 +13,7 @@ import restParam from '../function/restParam';
  * @memberOf _
  * @category Array
  * @param {Array} array The array to inspect.
- * @param {...Array} [values] The arrays of values to exclude.
+ * @param {...Array} [values] The values to exclude.
  * @returns {Array} Returns the new array of filtered values.
  * @example
  *
@@ -21,7 +21,7 @@ import restParam from '../function/restParam';
  * // => [1, 3]
  */
 var difference = restParam(function(array, values) {
-  return (isObjectLike(array) && isArrayLike(array))
+  return (isObject(array) && isArrayLike(array))
     ? baseDifference(array, baseFlatten(values, false, true))
     : [];
 });

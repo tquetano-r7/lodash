@@ -19,7 +19,8 @@ import chain from './chain';
  * // => { 'user': 'barney', 'age': 36 }
  *
  * // with explicit chaining
- * _(users).chain()
+ * _(users)
+ *   .chain()
  *   .first()
  *   .pick('user')
  *   .value();

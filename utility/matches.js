@@ -8,8 +8,8 @@ import baseMatches from '../internal/baseMatches';
  *
  * **Note:** This method supports comparing arrays, booleans, `Date` objects,
  * numbers, `Object` objects, regexes, and strings. Objects are compared by
- * their own, not inherited, enumerable properties. For comparing a single
- * own or inherited property value see `_.matchesProperty`.
+ * their own and inherited enumerable properties. For comparing a single
+ * value see `_.matchesProperty`.
  *
  * @static
  * @memberOf _

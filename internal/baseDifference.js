@@ -6,8 +6,8 @@ import createCache from './createCache';
 var LARGE_ARRAY_SIZE = 200;
 
 /**
- * The base implementation of `_.difference` which accepts a single array
- * of values to exclude.
+ * The base implementation of `_.difference` without support for individual
+ * values to exclude.
  *
  * @private
  * @param {Array} array The array to inspect.
@@ -15,7 +15,7 @@ var LARGE_ARRAY_SIZE = 200;
  * @returns {Array} Returns the new array of filtered values.
  */
 function baseDifference(array, values) {
-  var length = array ? array.length : 0,
+  var length = array.length,
       result = [];
 
   if (!length) {

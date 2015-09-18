@@ -1,11 +1,11 @@
-import assign from './assign';
-import assignDefaults from '../internal/assignDefaults';
-import createDefaults from '../internal/createDefaults';
+import extendDefaults from '../internal/extendDefaults';
+import extendWith from './extendWith';
+import restParam from '../function/restParam';
 
 /**
- * Assigns own enumerable properties of source object(s) to the destination
- * object for all destination properties that resolve to `undefined`. Once a
- * property is set, additional values of the same property are ignored.
+ * Assigns own and inherited enumerable properties of source objects to the
+ * destination object for all destination properties that resolve to `undefined`.
+ * Once a property is set, additional values of the same property are ignored.
  *
  * **Note:** This method mutates `object`.
  *
@@ -20,6 +20,9 @@ import createDefaults from '../internal/createDefaults';
  * _.defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
  * // => { 'user': 'barney', 'age': 36 }
  */
-var defaults = createDefaults(assign, assignDefaults);
+var defaults = restParam(function(args) {
+  args.push(undefined, extendDefaults);
+  return extendWith.apply(undefined, args);
+});
 
 export default defaults;

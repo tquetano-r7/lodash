@@ -1,5 +1,5 @@
 import isLength from '../internal/isLength';
-import isObjectLike from '../internal/isObjectLike';
+import isObjectLike from './isObjectLike';
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',

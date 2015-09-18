@@ -1,9 +1,13 @@
 import repeat from '../string/repeat';
-import root from './root';
+import stringSize from './stringSize';
+import stringToArray from './stringToArray';
+import toInteger from '../lang/toInteger';
+
+/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+var reStrSurrogate = /[\ud800-\udfff]/;
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeCeil = Math.ceil,
-    nativeIsFinite = root.isFinite;
+var nativeCeil = Math.ceil;
 
 /**
  * Creates the padding required for `string` based on the given `length`.
@@ -13,18 +17,22 @@ var nativeCeil = Math.ceil,
  * @param {string} string The string to create padding for.
  * @param {number} [length=0] The padding length.
  * @param {string} [chars=' '] The string used as padding.
- * @returns {string} Returns the pad for `string`.
+ * @returns {string} Returns the padding for `string`.
  */
 function createPadding(string, length, chars) {
-  var strLength = string.length;
-  length = +length;
+  length = toInteger(length);
 
-  if (strLength >= length || !nativeIsFinite(length)) {
+  var strLength = stringSize(string);
+  if (!length || strLength >= length) {
     return '';
   }
   var padLength = length - strLength;
-  chars = chars == null ? ' ' : (chars + '');
-  return repeat(chars, nativeCeil(padLength / chars.length)).slice(0, padLength);
+  chars = chars === undefined ? ' ' : (chars + '');
+
+  var result = repeat(chars, nativeCeil(padLength / stringSize(chars)));
+  return reStrSurrogate.test(chars)
+    ? stringToArray(result).slice(0, padLength).join('')
+    : result.slice(0, padLength);
 }
 
 export default createPadding;

@@ -60,7 +60,4 @@ var bindKey = restParam(function(object, key, partials) {
   return createWrapper(key, bitmask, object, partials, holders);
 });
 
-// Assign default placeholders.
-bindKey.placeholder = {};
-
 export default bindKey;

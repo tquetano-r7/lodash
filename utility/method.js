@@ -2,7 +2,7 @@ import invokePath from '../internal/invokePath';
 import restParam from '../function/restParam';
 
 /**
- * Creates a function that invokes the method at `path` on a given object.
+ * Creates a function that invokes the method at `path` of a given object.
  * Any additional arguments are provided to the invoked method.
  *
  * @static

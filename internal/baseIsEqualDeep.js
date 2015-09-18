@@ -2,12 +2,21 @@ import equalArrays from './equalArrays';
 import equalByTag from './equalByTag';
 import equalObjects from './equalObjects';
 import isArray from '../lang/isArray';
+import isHostObject from './isHostObject';
+import isMap from './isMap';
+import isSet from './isSet';
 import isTypedArray from '../lang/isTypedArray';
+import noMapSetTag from './noMapSetTag';
+
+/** Used to compose bitmasks for comparison styles. */
+var PARTIAL_COMPARE_FLAG = 2;
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
     arrayTag = '[object Array]',
-    objectTag = '[object Object]';
+    mapTag = '[object Map]',
+    objectTag = '[object Object]',
+    setTag = '[object Set]';
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -30,13 +39,13 @@ var objToString = objectProto.toString;
  * @param {Object} object The object to compare.
  * @param {Object} other The other object to compare.
  * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Function} [customizer] The function to customize comparing objects.
- * @param {boolean} [isLoose] Specify performing partial comparisons.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
  * @param {Array} [stackA=[]] Tracks traversed `value` objects.
  * @param {Array} [stackB=[]] Tracks traversed `other` objects.
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
-function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, stackB) {
+function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stackA, stackB) {
   var objIsArr = isArray(object),
       othIsArr = isArray(other),
       objTag = arrayTag,
@@ -44,7 +53,9 @@ function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, 
 
   if (!objIsArr) {
     objTag = objToString.call(object);
-    if (objTag == argsTag) {
+    if (noMapSetTag && objTag == objectTag) {
+      objTag = isMap(object) ? mapTag : (isSet(object) ? setTag : objTag);
+    } else if (objTag == argsTag) {
       objTag = objectTag;
     } else if (objTag != objectTag) {
       objIsArr = isTypedArray(object);
@@ -52,25 +63,28 @@ function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, 
   }
   if (!othIsArr) {
     othTag = objToString.call(other);
-    if (othTag == argsTag) {
+    if (noMapSetTag && othTag == objectTag) {
+      othTag = isMap(other) ? mapTag : (isSet(other) ? setTag : othTag);
+    } else if (othTag == argsTag) {
       othTag = objectTag;
     } else if (othTag != objectTag) {
       othIsArr = isTypedArray(other);
     }
   }
-  var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
+  var objIsObj = objTag == objectTag && !isHostObject(object),
+      othIsObj = othTag == objectTag && !isHostObject(other),
       isSameTag = objTag == othTag;
 
   if (isSameTag && !(objIsArr || objIsObj)) {
-    return equalByTag(object, other, objTag);
+    return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
   }
-  if (!isLoose) {
+  var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+  if (!isPartial) {
     var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
         othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
 
     if (objIsWrapped || othIsWrapped) {
-      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, isLoose, stackA, stackB);
+      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stackA, stackB);
     }
   }
   if (!isSameTag) {
@@ -91,7 +105,7 @@ function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, 
   stackA.push(object);
   stackB.push(other);
 
-  var result = (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, isLoose, stackA, stackB);
+  var result = (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stackA, stackB);
 
   stackA.pop();
   stackB.pop();

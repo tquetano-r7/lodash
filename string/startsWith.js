@@ -1,7 +1,9 @@
 import baseToString from '../internal/baseToString';
+import toInteger from '../lang/toInteger';
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeMin = Math.min;
+var nativeMax = Math.max,
+    nativeMin = Math.min;
 
 /**
  * Checks if `string` starts with the given target string.
@@ -26,10 +28,7 @@ var nativeMin = Math.min;
  */
 function startsWith(string, target, position) {
   string = baseToString(string);
-  position = position == null
-    ? 0
-    : nativeMin(position < 0 ? 0 : (+position || 0), string.length);
-
+  position = nativeMin(nativeMax(toInteger(position), 0), string.length);
   return string.lastIndexOf(target, position) == position;
 }
 

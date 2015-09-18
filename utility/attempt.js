@@ -24,7 +24,7 @@ import restParam from '../function/restParam';
 var attempt = restParam(function(func, args) {
   try {
     return func.apply(undefined, args);
-  } catch(e) {
+  } catch (e) {
     return isError(e) ? e : new Error(e);
   }
 });

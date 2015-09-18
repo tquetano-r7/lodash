@@ -14,7 +14,7 @@ var BIND_FLAG = 1,
  * The `_.bind.placeholder` value, which defaults to `_` in monolithic builds,
  * may be used as a placeholder for partially applied arguments.
  *
- * **Note:** Unlike native `Function#bind` this method does not set the "length"
+ * **Note:** Unlike native `Function#bind` this method doesn't set the "length"
  * property of bound functions.
  *
  * @static
@@ -49,8 +49,5 @@ var bind = restParam(function(func, thisArg, partials) {
   }
   return createWrapper(func, bitmask, thisArg, partials, holders);
 });
-
-// Assign default placeholders.
-bind.placeholder = {};
 
 export default bind;

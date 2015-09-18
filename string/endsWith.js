@@ -1,7 +1,9 @@
 import baseToString from '../internal/baseToString';
+import toInteger from '../lang/toInteger';
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeMin = Math.min;
+var nativeMax = Math.max,
+    nativeMin = Math.min;
 
 /**
  * Checks if `string` ends with the given target string.
@@ -31,7 +33,7 @@ function endsWith(string, target, position) {
   var length = string.length;
   position = position === undefined
     ? length
-    : nativeMin(position < 0 ? 0 : (+position || 0), length);
+    : nativeMin(nativeMax(toInteger(position), 0), length);
 
   position -= target.length;
   return position >= 0 && string.indexOf(target, position) == position;

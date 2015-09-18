@@ -3,7 +3,6 @@
  *
  * @static
  * @memberOf _
- * @alias head
  * @category Array
  * @param {Array} array The array to query.
  * @returns {*} Returns the first element of `array`.

@@ -1,10 +1,9 @@
-import assignOwnDefaults from '../internal/assignOwnDefaults';
-import assignWith from '../internal/assignWith';
 import attempt from '../utility/attempt';
-import baseAssign from '../internal/baseAssign';
 import baseToString from '../internal/baseToString';
 import baseValues from '../internal/baseValues';
 import escapeStringChar from '../internal/escapeStringChar';
+import extendDefaults from '../internal/extendDefaults';
+import extendWith from '../object/extendWith';
 import isError from '../lang/isError';
 import isIterateeCall from '../internal/isIterateeCall';
 import keys from '../object/keys';
@@ -130,9 +129,9 @@ function template(string, options, otherOptions) {
     options = otherOptions = undefined;
   }
   string = baseToString(string);
-  options = assignWith(baseAssign({}, otherOptions || options), settings, assignOwnDefaults);
+  options = extendWith({}, otherOptions || options, settings, extendDefaults);
 
-  var imports = assignWith(baseAssign({}, options.imports), settings.imports, assignOwnDefaults),
+  var imports = extendWith({}, options.imports, settings.imports, extendDefaults),
       importsKeys = keys(imports),
       importsValues = baseValues(imports, importsKeys);
 

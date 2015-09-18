@@ -1,4 +1,8 @@
 import baseToString from '../internal/baseToString';
+import stringToArray from '../internal/stringToArray';
+
+/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+var reStrSurrogate = /[\ud800-\udfff]/;
 
 /**
  * Capitalizes the first character of `string`.
@@ -15,7 +19,14 @@ import baseToString from '../internal/baseToString';
  */
 function capitalize(string) {
   string = baseToString(string);
-  return string && (string.charAt(0).toUpperCase() + string.slice(1));
+  if (!string) {
+    return string;
+  }
+  if (reStrSurrogate.test(string)) {
+    var strSymbols = stringToArray(string);
+    return strSymbols[0].toUpperCase() + strSymbols.slice(1).join('');
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export default capitalize;

@@ -1,19 +1,13 @@
-import arraySum from '../internal/arraySum';
-import baseCallback from '../internal/baseCallback';
 import baseSum from '../internal/baseSum';
-import isArray from '../lang/isArray';
-import isIterateeCall from '../internal/isIterateeCall';
-import toIterable from '../internal/toIterable';
+import identity from '../utility/identity';
 
 /**
- * Gets the sum of the values in `collection`.
+ * Gets the sum of the values in `array`.
  *
  * @static
  * @memberOf _
  * @category Math
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function|Object|string} [iteratee] The function invoked per iteration.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
+ * @param {Array} array The array to iterate over.
  * @returns {number} Returns the sum.
  * @example
  *
@@ -22,29 +16,9 @@ import toIterable from '../internal/toIterable';
  *
  * _.sum({ 'a': 4, 'b': 6 });
  * // => 10
- *
- * var objects = [
- *   { 'n': 4 },
- *   { 'n': 6 }
- * ];
- *
- * _.sum(objects, function(object) {
- *   return object.n;
- * });
- * // => 10
- *
- * // using the `_.property` callback shorthand
- * _.sum(objects, 'n');
- * // => 10
  */
-function sum(collection, iteratee, thisArg) {
-  if (thisArg && isIterateeCall(collection, iteratee, thisArg)) {
-    iteratee = undefined;
-  }
-  iteratee = baseCallback(iteratee, thisArg, 3);
-  return iteratee.length == 1
-    ? arraySum(isArray(collection) ? collection : toIterable(collection), iteratee)
-    : baseSum(collection, iteratee);
+function sum(array) {
+  return array ? baseSum(array, identity) : 0;
 }
 
 export default sum;

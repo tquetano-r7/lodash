@@ -1,5 +1,6 @@
 import baseDifference from '../internal/baseDifference';
-import isArrayLike from '../internal/isArrayLike';
+import isArrayLike from '../lang/isArrayLike';
+import isObject from '../lang/isObject';
 import restParam from '../function/restParam';
 
 /**
@@ -19,7 +20,7 @@ import restParam from '../function/restParam';
  * // => [3]
  */
 var without = restParam(function(array, values) {
-  return isArrayLike(array)
+  return (isObject(array) && isArrayLike(array))
     ? baseDifference(array, values)
     : [];
 });

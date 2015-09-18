@@ -1,15 +1,13 @@
 import arrayEach from './arrayEach';
+import assignMergeValue from './assignMergeValue';
 import baseMergeDeep from './baseMergeDeep';
 import isArray from '../lang/isArray';
-import isArrayLike from './isArrayLike';
 import isObject from '../lang/isObject';
-import isObjectLike from './isObjectLike';
 import isTypedArray from '../lang/isTypedArray';
-import keys from '../object/keys';
+import keysIn from '../object/keysIn';
 
 /**
- * The base implementation of `_.merge` without support for argument juggling,
- * multiple sources, and `this` binding `customizer` functions.
+ * The base implementation of `_.merge` without support for multiple sources.
  *
  * @private
  * @param {Object} object The destination object.
@@ -17,40 +15,30 @@ import keys from '../object/keys';
  * @param {Function} [customizer] The function to customize merged values.
  * @param {Array} [stackA=[]] Tracks traversed source objects.
  * @param {Array} [stackB=[]] Associates values with source counterparts.
- * @returns {Object} Returns `object`.
  */
 function baseMerge(object, source, customizer, stackA, stackB) {
-  if (!isObject(object)) {
-    return object;
+  if (object === source) {
+    return;
   }
-  var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source)),
-      props = isSrcArr ? undefined : keys(source);
-
+  var props = (isArray(source) || isTypedArray(source)) ? undefined : keysIn(source);
   arrayEach(props || source, function(srcValue, key) {
     if (props) {
       key = srcValue;
       srcValue = source[key];
     }
-    if (isObjectLike(srcValue)) {
+    if (isObject(srcValue)) {
       stackA || (stackA = []);
       stackB || (stackB = []);
       baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
     }
     else {
-      var value = object[key],
-          result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-          isCommon = result === undefined;
-
-      if (isCommon) {
-        result = srcValue;
+      var newValue = customizer ? customizer(object[key], srcValue, (key + ''), object, source, stackA, stackB) : undefined;
+      if (newValue === undefined) {
+        newValue = srcValue;
       }
-      if ((result !== undefined || (isSrcArr && !(key in object))) &&
-          (isCommon || (result === result ? (result !== value) : (value === value)))) {
-        object[key] = result;
-      }
+      assignMergeValue(object, key, newValue);
     }
   });
-  return object;
 }
 
 export default baseMerge;

@@ -79,6 +79,7 @@ function debounce(func, wait, options) {
       timeoutId,
       trailingCall,
       lastCalled = 0,
+      leading = false,
       maxWait = false,
       trailing = true;
 
@@ -86,10 +87,7 @@ function debounce(func, wait, options) {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   wait = wait < 0 ? 0 : (+wait || 0);
-  if (options === true) {
-    var leading = true;
-    trailing = false;
-  } else if (isObject(options)) {
+  if (isObject(options)) {
     leading = !!options.leading;
     maxWait = 'maxWait' in options && nativeMax(+options.maxWait || 0, wait);
     trailing = 'trailing' in options ? !!options.trailing : trailing;

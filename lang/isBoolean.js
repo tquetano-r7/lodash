@@ -1,4 +1,4 @@
-import isObjectLike from '../internal/isObjectLike';
+import isObjectLike from './isObjectLike';
 
 /** `Object#toString` result references. */
 var boolTag = '[object Boolean]';
@@ -29,7 +29,8 @@ var objToString = objectProto.toString;
  * // => false
  */
 function isBoolean(value) {
-  return value === true || value === false || (isObjectLike(value) && objToString.call(value) == boolTag);
+  return value === true || value === false ||
+    (isObjectLike(value) && objToString.call(value) == boolTag);
 }
 
 export default isBoolean;

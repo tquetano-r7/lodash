@@ -1,4 +1,3 @@
-import isIterateeCall from '../internal/isIterateeCall';
 import root from '../internal/root';
 import trim from './trim';
 
@@ -21,7 +20,7 @@ var nativeParseInt = root.parseInt;
  * @category String
  * @param {string} string The string to convert.
  * @param {number} [radix] The radix to interpret `value` by.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
+ * @param- {Object} [guard] Enables use as an iteratee for functions like `_.map`.
  * @returns {number} Returns the converted integer.
  * @example
  *
@@ -32,10 +31,9 @@ var nativeParseInt = root.parseInt;
  * // => [6, 8, 10]
  */
 function parseInt(string, radix, guard) {
-  // Firefox < 21 and Opera < 15 follow ES3 for `parseInt`.
   // Chrome fails to trim leading <BOM> whitespace characters.
   // See https://code.google.com/p/v8/issues/detail?id=3109 for more details.
-  if (guard ? isIterateeCall(string, radix, guard) : radix == null) {
+  if (guard || radix == null) {
     radix = 0;
   } else if (radix) {
     radix = +radix;

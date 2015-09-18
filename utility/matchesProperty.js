@@ -2,12 +2,11 @@ import baseClone from '../internal/baseClone';
 import baseMatchesProperty from '../internal/baseMatchesProperty';
 
 /**
- * Creates a function that compares the property value of `path` on a given
- * object to `value`.
+ * Creates a function that compares the value at `path` of a given object
+ * to `srcValue`.
  *
  * **Note:** This method supports comparing arrays, booleans, `Date` objects,
- * numbers, `Object` objects, regexes, and strings. Objects are compared by
- * their own, not inherited, enumerable properties.
+ * numbers, `Object` objects, regexes, and strings.
  *
  * @static
  * @memberOf _
